@@ -51,6 +51,7 @@ public class BlacklistService {
         long duplicateLinesInFile = 0;
         long invalidLines = 0;
         long inserted = 0;
+        long uniqueRecords = 0;
 
         Set<String> uniqueValues = new HashSet<>();
 
@@ -77,42 +78,43 @@ public class BlacklistService {
                         BlacklistValueUtils.normalize(line);
 
                 /*
-                 * Ignore blank lines.
+                 * Blank line
                  */
                 if (value == null || value.isBlank()) {
                     blankLines++;
                     continue;
                 }
 
+                /*
+                 * Detect EMAIL / DOMAIN
+                 */
                 BlacklistType type =
                         BlacklistValueUtils.detectType(value);
 
-                /*
-                 * At this stage we only accept:
-                 *
-                 * EMAIL
-                 * DOMAIN
-                 */
                 if (type == null) {
                     invalidLines++;
                     continue;
                 }
 
+                /*
+                 * Prevent duplicate values inside the same file.
+                 */
                 String uniqueKey =
                         type.name() + ":" + value;
 
-                /*
-                 * Duplicate inside uploaded file.
-                 */
                 if (!uniqueValues.add(uniqueKey)) {
                     duplicateLinesInFile++;
                     continue;
                 }
 
-                new BlacklistBulkRepository.BlacklistBatchItem(
-                        value,
-                        type,
-                        "Imported from " + fileName
+                uniqueRecords++;
+
+                batch.add(
+                        new BlacklistBulkRepository.BlacklistBatchItem(
+                                value,
+                                type,
+                                "Imported from " + fileName
+                        )
                 );
 
                 /*
@@ -139,13 +141,12 @@ public class BlacklistService {
             batch.clear();
         }
 
-        long uniqueRecords = uniqueValues.size();
-
+        /*
+         * Because the file was already deduplicated,
+         * anything not inserted was already present in DB.
+         */
         long alreadyExists =
-                Math.max(
-                        0,
-                        uniqueRecords - inserted
-                );
+                uniqueRecords - inserted;
 
         return BlacklistUploadResponse.builder()
                 .fileName(fileName)

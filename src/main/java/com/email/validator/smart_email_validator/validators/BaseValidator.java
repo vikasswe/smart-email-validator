@@ -12,7 +12,7 @@ public abstract  class BaseValidator {
 //        vd.setIsPassed(passed);
         vd.setMessage(message);
 //        vd.setImpactScore(score);
-        vd.setCheckedAt(Instant.now());
+//        vd.setCheckedAt(Instant.now());
 
         return vd;
     }

@@ -28,7 +28,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class EmailRecord {
+public class EmailRecord extends BaseEntity {
 
     @Id
     @GeneratedValue
@@ -43,9 +43,6 @@ public class EmailRecord {
 
     @Column(nullable = false, length = 253)
     private String domain;
-
-    @Column(name = "created_at", nullable = false)
-    private Instant createdAt;
 
     @OneToMany(
             mappedBy = "emailRecord",

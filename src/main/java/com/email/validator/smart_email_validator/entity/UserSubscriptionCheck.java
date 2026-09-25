@@ -26,7 +26,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserSubscriptionCheck {
+public class UserSubscriptionCheck extends BaseEntity {
 
     @Id
     @GeneratedValue

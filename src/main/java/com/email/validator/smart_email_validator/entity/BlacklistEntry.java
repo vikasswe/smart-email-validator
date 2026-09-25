@@ -27,7 +27,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BlacklistEntry {
+public class BlacklistEntry extends BaseEntity {
 
     @Id
     @GeneratedValue

@@ -2,10 +2,25 @@ package com.email.validator.smart_email_validator.utils;
 
 import com.email.validator.smart_email_validator.enums.BlacklistType;
 
+import java.util.Locale;
+import java.util.regex.Pattern;
+
 public final class BlacklistValueUtils {
 
     private BlacklistValueUtils() {
     }
+
+    private static final Pattern EMAIL_PATTERN =
+            Pattern.compile(
+                    "^[^\\s@]+@[^\\s@]+$"
+            );
+
+    private static final Pattern DOMAIN_PATTERN =
+            Pattern.compile(
+                    "^(?=.{1,253}$)(?:[a-zA-Z0-9]"
+                            + "(?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+"
+                            + "[a-zA-Z]{2,63}$"
+            );
 
     public static String normalize(String value) {
 
@@ -15,26 +30,28 @@ public final class BlacklistValueUtils {
 
         return value
                 .trim()
-                .toLowerCase();
+                .toLowerCase(Locale.ROOT);
     }
 
-    public static BlacklistType detectType(String value) {
+    public static BlacklistType detectType(
+            String value
+    ) {
 
         if (value == null || value.isBlank()) {
             return null;
         }
 
-        String normalized = normalize(value);
+        String normalized =
+                normalize(value);
 
-        int firstAt = normalized.indexOf('@');
-        int lastAt = normalized.lastIndexOf('@');
-
-        if (firstAt > 0 && firstAt == lastAt
-                && firstAt < normalized.length() - 1) {
-
+        if (EMAIL_PATTERN.matcher(normalized).matches()) {
             return BlacklistType.EMAIL;
         }
 
-        return BlacklistType.DOMAIN;
+        if (DOMAIN_PATTERN.matcher(normalized).matches()) {
+            return BlacklistType.DOMAIN;
+        }
+
+        return null;
     }
 }

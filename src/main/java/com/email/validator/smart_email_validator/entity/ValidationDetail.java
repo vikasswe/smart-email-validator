@@ -23,7 +23,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ValidationDetail {
+public class ValidationDetail extends BaseEntity{
 
     @Id
     @GeneratedValue
@@ -60,6 +60,4 @@ public class ValidationDetail {
     @Column(name = "earned_points", nullable = false)
     private Integer earnedPoints;
 
-    @Column(name = "checked_at", nullable = false)
-    private Instant checkedAt;
 }

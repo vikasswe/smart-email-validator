@@ -33,7 +33,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ValidationExecution {
+public class ValidationExecution extends BaseEntity {
 
     @Id
     @GeneratedValue

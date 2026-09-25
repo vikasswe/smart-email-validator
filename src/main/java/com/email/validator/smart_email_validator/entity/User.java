@@ -12,9 +12,17 @@ import java.util.UUID;
         name = "app_user",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_app_user_email",
+                        name = "uk_user_email",
                         columnNames = "email"
+                ),
+                @UniqueConstraint(
+                        name = "uk_user_username",
+                        columnNames = "username"
                 )
+        },
+        indexes = {
+                @Index(name = "idx_user_email", columnList = "email"),
+                @Index(name = "idx_user_username", columnList = "username")
         }
 )
 @Getter
@@ -22,23 +30,27 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue
     private UUID id;
 
-    @Column(nullable = false, length = 320)
+    @Column(nullable = false, unique = true, length = 320)
     private String email;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, unique = true, length = 100)
     private String username;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private UserStatus status;
 
-    @Column(name = "created_at", nullable = false)
-    private Instant createdAt;
+    @PrePersist
+    public void prePersist() {
 
+        if (status == null) {
+            status = UserStatus.ACTIVE;
+        }
+    }
 }

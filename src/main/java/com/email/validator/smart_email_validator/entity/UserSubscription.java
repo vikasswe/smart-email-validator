@@ -23,7 +23,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserSubscription {
+public class UserSubscription extends BaseEntity {
 
     @Id
     @GeneratedValue
