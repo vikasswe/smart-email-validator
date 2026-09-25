@@ -9,9 +9,9 @@ public abstract  class BaseValidator {
     protected ValidationDetail build(String name, boolean passed, String message, double score) {
         ValidationDetail vd = new ValidationDetail();
         vd.setCheckName(name);
-        vd.setIsPassed(passed);
+//        vd.setIsPassed(passed);
         vd.setMessage(message);
-        vd.setImpactScore(score);
+//        vd.setImpactScore(score);
         vd.setCheckedAt(Instant.now());
 
         return vd;

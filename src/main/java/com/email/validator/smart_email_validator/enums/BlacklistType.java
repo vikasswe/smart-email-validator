@@ -1,9 +1,8 @@
 package com.email.validator.smart_email_validator.enums;
 
-public enum EmailStatus {
+public enum BlacklistType {
 
-    VALID,
-    RISKY,
-    INVALID
+    EMAIL,
+    DOMAIN
 
 }

@@ -1,53 +1,65 @@
 package com.email.validator.smart_email_validator.entity;
 
+import com.email.validator.smart_email_validator.enums.CheckResult;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.UUID;
 
+
 @Entity
-@Table(name = "validation_detail")
-@AllArgsConstructor
+@Table(
+        name = "validation_detail",
+        indexes = {
+                @Index(
+                        name = "idx_validation_detail_execution",
+                        columnList = "validation_execution_id"
+                )
+        }
+)
+@Getter
+@Setter
 @NoArgsConstructor
-@Data
+@AllArgsConstructor
+@Builder
 public class ValidationDetail {
 
     @Id
     @GeneratedValue
     private UUID id;
 
-    @Column(name = "check_name")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "validation_execution_id",
+            nullable = false
+    )
+    private ValidationExecution validationExecution;
+
+    @Column(name = "check_code", nullable = false, length = 100)
+    private String checkCode;
+
+    @Column(name = "check_name", nullable = false, length = 150)
     private String checkName;
 
-    @Column(name = "is_passed")
-    private Boolean isPassed;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private CheckResult result;
 
-    @Column(name = "message")
+    @Column(nullable = false, length = 1000)
     private String message;
 
-    @Column(name = "impact_score")
-    private Double impactScore;
+    /**
+     * Weight used during this particular validation.
+     * <p>
+     * This is a snapshot.
+     */
+    @Column(nullable = false)
+    private Integer weight;
 
-    @Column(name = "checked_at")
+    @Column(name = "earned_points", nullable = false)
+    private Integer earnedPoints;
+
+    @Column(name = "checked_at", nullable = false)
     private Instant checkedAt;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "email_record_id", nullable = false)
-    private EmailRecord emailRecord;
-
-    @Override
-    public String toString() {
-        return "ValidationDetail{" +
-                "id=" + id +
-                ", checkName='" + checkName + '\'' +
-                ", isPassed=" + isPassed +
-                ", message='" + message + '\'' +
-                ", impactScore=" + impactScore +
-                ", checkedAt=" + checkedAt +
-                '}';
-    }
-
 }

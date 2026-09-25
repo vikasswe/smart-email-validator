@@ -1,18 +1,31 @@
 package com.email.validator.smart_email_validator.utils;
 
-public class EmailUtils {
+public final class EmailUtils {
 
-    public static String extractDomain(String email) {
-        if (!email.contains("@")) {
-            return null;
-        }
-
-        String[] parts = email.split("@");
-        if (parts.length != 2) {
-            return null;
-        }
-
-        return parts[1];
+    private EmailUtils() {
     }
 
+    public static String normalize(String email) {
+
+        if (email == null) {
+            return null;
+        }
+
+        return email.trim().toLowerCase();
+    }
+
+    public static String extractDomain(String email) {
+
+        if (email == null) {
+            return null;
+        }
+
+        int atIndex = email.lastIndexOf('@');
+
+        if (atIndex <= 0 || atIndex == email.length() - 1) {
+            return null;
+        }
+
+        return email.substring(atIndex + 1).toLowerCase();
+    }
 }

@@ -10,11 +10,27 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update       # Automatically creates/updates tables based on entities
-    show-sql: true           # Logs SQL queries for debugging
+      ddl-auto: update
+    show-sql: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 110MB
+
 server:
   port: 4563
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha

@@ -1,9 +1,12 @@
 package com.email.validator.smart_email_validator.enums;
 
-public enum EmailStatus {
+public enum ScoreLevel {
 
-    VALID,
+    EXCELLENT,
+    GOOD,
+    ACCEPTABLE,
     RISKY,
+    HIGH_RISK,
     INVALID
 
 }

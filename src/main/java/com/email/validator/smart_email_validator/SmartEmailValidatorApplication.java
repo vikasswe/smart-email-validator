@@ -13,8 +13,17 @@ public class SmartEmailValidatorApplication {
 	}
 
 	@EventListener(ApplicationReadyEvent.class)
-	public void onApplicationReady(){
-		System.out.println("Server started at http://localhost:4563");
+	public void onApplicationReady() {
+
+		System.out.println();
+		System.out.println("=================================================");
+		System.out.println("        Smart Email Validator Started");
+		System.out.println("=================================================");
+		System.out.println("Server     : http://localhost:4563");
+		System.out.println("Swagger UI : http://localhost:4563/swagger-ui.html");
+		System.out.println("API Docs   : http://localhost:4563/v3/api-docs");
+		System.out.println("=================================================");
+		System.out.println();
 	}
 
 }

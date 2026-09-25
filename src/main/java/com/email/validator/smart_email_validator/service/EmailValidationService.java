@@ -32,86 +32,86 @@ public class EmailValidationService {
 
     public EmailResponse validate(String email) {
 
-        Optional<EmailRecord> existing = emailRecordRepository.findByEmail(email);
+//        Optional<EmailRecord> existing = emailRecordRepository.findByEmail(email);
+//
+//        if (existing.isPresent()) {
+//            return map(existing.get());
+//        }
+//
+//        EmailRecord emailRecord = new EmailRecord();
+//        String domain = EmailUtils.extractDomain(email);
+//
+//        emailRecord.setEmail(email);
+//        emailRecord.setDomain(domain);
+//        emailRecord.setCreatedAt(Instant.now());
+//
+//        List<ValidationDetail> validationDetails = new ArrayList<>();
+//
+//        boolean isValid = true;
+//        double score = 1.0;
+//        boolean isDisposable = false;
+//        boolean isSpam = false;
+//
+//        for (EmailValidationStrategy strategy : emailValidationStrategies) {
+//            try {
+//                ValidationDetail detail = strategy.validate(email);
+//                System.out.println(detail.toString());
+//
+//                detail.setEmailRecord(emailRecord);
+//                validationDetails.add(detail);
+//
+//                if (!detail.getIsPassed()) {
+//                    isValid = false;
+//                    score -= detail.getImpactScore();
+//                    if ("Disposable Check".equals(detail.getCheckName())) {
+//                        isDisposable = true;
+//                    } else {
+//                        isSpam = true;
+//                    }
+//                }
+//
+//            } catch (Exception e) {
+//
+//                ValidationDetail error = new ValidationDetail();
+//                error.setCheckName("System Error");
+//                error.setIsPassed(false);
+//                error.setMessage("Validator failed internally");
+//                error.setImpactScore(1.0);
+//                error.setEmailRecord(emailRecord);
+//
+//                validationDetails.add(error);
+//
+//                isValid = false;
+//                score -= 1.0;
+//            }
+//        }
+//
+//        if (score < 0) score = 0;
+//
+//        emailRecord.setIsValid(isValid);
+//        emailRecord.setIsSpam(isSpam);
+//        emailRecord.setIsDisposable(isDisposable);
+//        emailRecord.setScore(score);
+//        emailRecord.setValidationDetails(validationDetails);
+//        emailRecord.setEmailStatus(StatusDecide.calculateStatus(score));
+//
+//        emailRecordRepository.save(emailRecord);
 
-        if (existing.isPresent()) {
-            return map(existing.get());
-        }
-
-        EmailRecord emailRecord = new EmailRecord();
-        String domain = EmailUtils.extractDomain(email);
-
-        emailRecord.setEmail(email);
-        emailRecord.setDomain(domain);
-        emailRecord.setCreatedAt(Instant.now());
-
-        List<ValidationDetail> validationDetails = new ArrayList<>();
-
-        boolean isValid = true;
-        double score = 1.0;
-        boolean isDisposable = false;
-        boolean isSpam = false;
-
-        for (EmailValidationStrategy strategy : emailValidationStrategies) {
-            try {
-                ValidationDetail detail = strategy.validate(email);
-                System.out.println(detail.toString());
-
-                detail.setEmailRecord(emailRecord);
-                validationDetails.add(detail);
-
-                if (!detail.getIsPassed()) {
-                    isValid = false;
-                    score -= detail.getImpactScore();
-                    if ("Disposable Check".equals(detail.getCheckName())) {
-                        isDisposable = true;
-                    } else {
-                        isSpam = true;
-                    }
-                }
-
-            } catch (Exception e) {
-
-                ValidationDetail error = new ValidationDetail();
-                error.setCheckName("System Error");
-                error.setIsPassed(false);
-                error.setMessage("Validator failed internally");
-                error.setImpactScore(1.0);
-                error.setEmailRecord(emailRecord);
-
-                validationDetails.add(error);
-
-                isValid = false;
-                score -= 1.0;
-            }
-        }
-
-        if (score < 0) score = 0;
-
-        emailRecord.setIsValid(isValid);
-        emailRecord.setIsSpam(isSpam);
-        emailRecord.setIsDisposable(isDisposable);
-        emailRecord.setScore(score);
-        emailRecord.setValidationDetails(validationDetails);
-        emailRecord.setEmailStatus(StatusDecide.calculateStatus(score));
-
-        emailRecordRepository.save(emailRecord);
-
-        return map(emailRecord);
+        return null;
     }
 
     private EmailResponse map(EmailRecord record) {
 
-        EmailResponse response = new EmailResponse();
-
-        response.setEmail(record.getEmail());
-        response.setDomain(record.getDomain());
-        response.setIsValid(record.getIsValid());
-        response.setIsDisposable(record.getIsDisposable());
-        response.setIsSpam(record.getIsSpam());
-        response.setScore(record.getScore());
-        response.setCreatedAt(record.getCreatedAt());
-        response.setEmailStatus(record.getEmailStatus());
+//        EmailResponse response = new EmailResponse();
+//
+//        response.setEmail(record.getEmail());
+//        response.setDomain(record.getDomain());
+//        response.setIsValid(record.getIsValid());
+//        response.setIsDisposable(record.getIsDisposable());
+//        response.setIsSpam(record.getIsSpam());
+//        response.setScore(record.getScore());
+//        response.setCreatedAt(record.getCreatedAt());
+//        response.setEmailStatus(record.getEmailStatus());
 
         // Map ValidationDetail to DTO
 //        if (record.getValidationDetails() != null) {
@@ -127,6 +127,6 @@ public class EmailValidationService {
 //            }
 //            response.setDetails(details);
 //        }
-        return response;
+        return null;
     }
 }
