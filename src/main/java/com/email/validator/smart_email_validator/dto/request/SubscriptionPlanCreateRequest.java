@@ -22,10 +22,6 @@ public record SubscriptionPlanCreateRequest(
         BillingCycle billingCycle,
 
         @NotNull
-        @Min(0)
-        Long credits,
-
-        @NotNull
         @Min(1)
         Integer maxEmailsPerRequest,
 

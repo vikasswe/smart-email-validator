@@ -50,9 +50,6 @@ public class SubscriptionPlan extends BaseEntity {
     )
     private BillingCycle billingCycle;
 
-    @Column(nullable = false)
-    private Long credits;
-
     @Column(
             name = "max_emails_per_request",
             nullable = false

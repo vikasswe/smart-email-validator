@@ -25,4 +25,5 @@ public record CheckTypeCreateRequest(
         @NotNull
         @Min(0)
         Integer executionOrder
-) {}
+) {
+}

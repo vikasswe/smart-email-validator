@@ -8,9 +8,15 @@ import java.util.UUID;
 @Entity
 @Table(
         name = "check_type",
-        indexes = {
-                @Index(name = "idx_check_type_enabled", columnList = "enabled"),
-                @Index(name = "idx_check_type_execution_order", columnList = "execution_order")
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_check_type_name",
+                        columnNames = "name"
+                ),
+                @UniqueConstraint(
+                        name = "uk_check_type_execution_order",
+                        columnNames = "execution_order"
+                )
         }
 )
 @Getter
@@ -24,11 +30,7 @@ public class CheckType extends BaseEntity {
     @GeneratedValue
     private UUID id;
 
-    @Column(
-            nullable = false,
-            length = 150,
-            unique = true
-    )
+    @Column(nullable = false, length = 150, unique = true)
     private String name;
 
     @Column(name = "default_weight", nullable = false)
@@ -40,10 +42,6 @@ public class CheckType extends BaseEntity {
     @Column(nullable = false)
     private Boolean enabled;
 
-    @Column(
-            name = "execution_order",
-            nullable = false,
-            unique = true
-    )
+    @Column(name = "execution_order", nullable = false, unique = true)
     private Integer executionOrder;
 }

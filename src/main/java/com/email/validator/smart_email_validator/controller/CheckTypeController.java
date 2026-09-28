@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -24,13 +25,13 @@ public class CheckTypeController {
     private final CheckTypeService service;
 
     @PostMapping
-    @Operation(summary = "Create check type")
-    public ResponseEntity<CheckTypeResponse> create(
-            @Valid @RequestBody CheckTypeCreateRequest request) {
+    @Operation(summary = "Create or update check types in bulk")
+    public ResponseEntity<List<CheckTypeResponse>> createOrUpdate(
+            @Valid @RequestBody List<@Valid CheckTypeCreateRequest> requests) {
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(service.create(request));
+        return ResponseEntity.ok(
+                service.createOrUpdate(requests)
+        );
     }
 
     @GetMapping("/{id}")

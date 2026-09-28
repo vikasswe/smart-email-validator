@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -19,17 +21,45 @@ public class CheckTypeService {
 
     private final CheckTypeRepository repository;
 
-    public CheckTypeResponse create(CheckTypeCreateRequest request) {
+    public List<CheckTypeResponse> createOrUpdate(
+            List<CheckTypeCreateRequest> requests) {
 
-        CheckType checkType = CheckType.builder()
-                .name(request.name().trim())
-                .defaultWeight(request.defaultWeight())
-                .estimatedTimeMs(request.estimatedTimeMs())
-                .enabled(request.enabled())
-                .executionOrder(request.executionOrder())
-                .build();
+        List<CheckType> results = new ArrayList<>();
 
-        return toResponse(repository.save(checkType));
+        for (CheckTypeCreateRequest request : requests) {
+
+            String name = request.name().trim();
+
+            CheckType checkType = repository
+                    .findByNameIgnoreCase(name)
+                    .orElseGet(() ->
+                            repository
+                                    .findByExecutionOrder(
+                                            request.executionOrder()
+                                    )
+                                    .orElseGet(CheckType::new)
+                    );
+
+            checkType.setName(name);
+            checkType.setDefaultWeight(
+                    request.defaultWeight()
+            );
+            checkType.setEstimatedTimeMs(
+                    request.estimatedTimeMs()
+            );
+            checkType.setEnabled(
+                    request.enabled()
+            );
+            checkType.setExecutionOrder(
+                    request.executionOrder()
+            );
+
+            results.add(repository.save(checkType));
+        }
+
+        return results.stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     @Transactional(readOnly = true)

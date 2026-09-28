@@ -33,7 +33,6 @@ public class SubscriptionPlanService {
                 .name(request.name().trim())
                 .price(request.price())
                 .billingCycle(request.billingCycle())
-                .credits(request.credits())
                 .maxEmailsPerRequest(
                         request.maxEmailsPerRequest()
                 )
@@ -161,7 +160,6 @@ public class SubscriptionPlanService {
                 .name(plan.getName())
                 .price(plan.getPrice())
                 .billingCycle(plan.getBillingCycle())
-                .credits(plan.getCredits())
                 .maxEmailsPerRequest(
                         plan.getMaxEmailsPerRequest()
                 )
