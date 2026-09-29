@@ -10,6 +10,5 @@ public record CheckTypeResponse(
         String name,
         Integer defaultWeight,
         Long estimatedTimeMs,
-        Boolean enabled,
-        Integer executionOrder
+        Boolean enabled
 ) {}

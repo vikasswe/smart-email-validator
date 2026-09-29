@@ -55,8 +55,9 @@ public class UserSubscriptionService {
 
         Optional<UserSubscription> existing =
                 subscriptionRepository
-                        .findFirstByUserIdAndStatusOrderByStartAtDesc(
+                        .findFirstByUserIdAndPlanIdAndStatusOrderByStartAtDesc(
                                 user.getId(),
+                                plan.getId(),
                                 SubscriptionStatus.ACTIVE
                         );
 
@@ -65,13 +66,19 @@ public class UserSubscriptionService {
 
             if (current.getEndAt() == null
                     || current.getEndAt().isAfter(now)) {
-                throw new IllegalArgumentException(
-                        "User already has an active subscription"
+
+                current.setStatus(SubscriptionStatus.CANCELLED);
+                current.setRemarks(
+                        "Cancelled because the user resubscribed to the same plan."
+                );
+            } else {
+                current.setStatus(SubscriptionStatus.EXPIRED);
+                current.setRemarks(
+                        "Subscription expired before the user resubscribed."
                 );
             }
 
-            // Mark an expired subscription as expired.
-            current.setStatus(SubscriptionStatus.EXPIRED);
+            subscriptionRepository.save(current);
         }
 
         Instant endAt = plan.getPlanDurationDays() == null

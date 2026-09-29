@@ -52,9 +52,6 @@ public class UserSubscription extends BaseEntity {
     @Column(name = "billing_cycle_snapshot", nullable = false, length = 20)
     private BillingCycle billingCycleSnapshot;
 
-    @Column(name = "credits_snapshot", nullable = false)
-    private Long creditsSnapshot;
-
     @Column(name = "max_emails_per_request_snapshot", nullable = false)
     private Integer maxEmailsPerRequestSnapshot;
 
@@ -63,6 +60,10 @@ public class UserSubscription extends BaseEntity {
 
     @Column(name = "total_email_check_till_expiry_snapshot", nullable = false)
     private Integer totalEmailCheckTillExpirySnapshot;
+
+    @Column(name = "total_email_check_till_now")
+    @Builder.Default
+    private Integer totalEmailCheckTillNow = 0;
 
     @Column(name = "num_of_client_id_secret_generate_snapshot", nullable = false)
     private Integer numOfClientIdSecretGenerateSnapshot;
@@ -84,4 +85,7 @@ public class UserSubscription extends BaseEntity {
     )
     @Builder.Default
     private List<UserSubscriptionCheck> checks = new ArrayList<>();
+
+    @Column(length = 1000)
+    private String remarks;
 }

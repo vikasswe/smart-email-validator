@@ -20,10 +20,6 @@ public record CheckTypeCreateRequest(
         Long estimatedTimeMs,
 
         @NotNull
-        Boolean enabled,
-
-        @NotNull
-        @Min(0)
-        Integer executionOrder
+        Boolean enabled
 ) {
 }

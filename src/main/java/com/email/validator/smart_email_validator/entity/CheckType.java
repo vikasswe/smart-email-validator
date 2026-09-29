@@ -12,10 +12,6 @@ import java.util.UUID;
                 @UniqueConstraint(
                         name = "uk_check_type_name",
                         columnNames = "name"
-                ),
-                @UniqueConstraint(
-                        name = "uk_check_type_execution_order",
-                        columnNames = "execution_order"
                 )
         }
 )
@@ -41,7 +37,4 @@ public class CheckType extends BaseEntity {
 
     @Column(nullable = false)
     private Boolean enabled;
-
-    @Column(name = "execution_order", nullable = false, unique = true)
-    private Integer executionOrder;
 }

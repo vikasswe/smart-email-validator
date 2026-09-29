@@ -32,27 +32,12 @@ public class CheckTypeService {
 
             CheckType checkType = repository
                     .findByNameIgnoreCase(name)
-                    .orElseGet(() ->
-                            repository
-                                    .findByExecutionOrder(
-                                            request.executionOrder()
-                                    )
-                                    .orElseGet(CheckType::new)
-                    );
+                    .orElseGet(CheckType::new);
 
             checkType.setName(name);
-            checkType.setDefaultWeight(
-                    request.defaultWeight()
-            );
-            checkType.setEstimatedTimeMs(
-                    request.estimatedTimeMs()
-            );
-            checkType.setEnabled(
-                    request.enabled()
-            );
-            checkType.setExecutionOrder(
-                    request.executionOrder()
-            );
+            checkType.setDefaultWeight(request.defaultWeight());
+            checkType.setEstimatedTimeMs(request.estimatedTimeMs());
+            checkType.setEnabled(request.enabled());
 
             results.add(repository.save(checkType));
         }
@@ -99,7 +84,6 @@ public class CheckTypeService {
                 .defaultWeight(entity.getDefaultWeight())
                 .estimatedTimeMs(entity.getEstimatedTimeMs())
                 .enabled(entity.getEnabled())
-                .executionOrder(entity.getExecutionOrder())
                 .build();
     }
 }
