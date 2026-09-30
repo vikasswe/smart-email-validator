@@ -36,59 +36,74 @@ public interface UserSubscriptionRepository
 
     List<UserSubscription> findByUserIdOrderByCreatedAtDesc(UUID userId);
 
-    @Modifying
-    @Query("""
-            update UserSubscription s
-               set s.totalEmailCheckTillNow =
-                   coalesce(s.totalEmailCheckTillNow, 0) + :count
-             where s.id = :subscriptionId
-               and s.status = :status
-               and (s.endAt is null or s.endAt > :now)
-               and coalesce(s.totalEmailCheckTillNow, 0) + :count
-                   <= s.totalEmailCheckTillExpirySnapshot
-            """)
-    int incrementUsageIfAvailable(
-            UUID subscriptionId,
-            int count,
-            SubscriptionStatus status,
-            Instant now
-    );
-
-
+    /**
+     * Increments usage by the requested count if sufficient quota exists.
+     */
     @Modifying(
             clearAutomatically = true,
             flushAutomatically = true
     )
     @Query("""
-    update UserSubscription s
-       set s.totalEmailCheckTillNow =
-           coalesce(s.totalEmailCheckTillNow, 0) + 1
-     where s.id = :subscriptionId
-       and s.status = :status
-       and (s.endAt is null or s.endAt > :now)
-       and coalesce(s.totalEmailCheckTillNow, 0) + 1
-           <= s.totalEmailCheckTillExpirySnapshot
-    """)
+            UPDATE UserSubscription s
+               SET s.totalEmailCheckTillNow =
+                   COALESCE(s.totalEmailCheckTillNow, 0) + :count
+             WHERE s.id = :subscriptionId
+               AND s.status = :status
+               AND (s.endAt IS NULL OR s.endAt > :now)
+               AND COALESCE(s.totalEmailCheckTillNow, 0) + :count
+                   <= s.totalEmailCheckTillExpirySnapshot
+            """)
+    int incrementUsageIfAvailable(
+            @Param("subscriptionId") UUID subscriptionId,
+            @Param("count") int count,
+            @Param("status") SubscriptionStatus status,
+            @Param("now") Instant now
+    );
+
+    /**
+     * Atomically reserves quota for one email attempt.
+     * <p>
+     * Returns 1 if reserved, otherwise 0.
+     */
+    @Modifying(
+            clearAutomatically = true,
+            flushAutomatically = true
+    )
+    @Query("""
+            UPDATE UserSubscription s
+               SET s.totalEmailCheckTillNow =
+                   COALESCE(s.totalEmailCheckTillNow, 0) + 1
+             WHERE s.id = :subscriptionId
+               AND s.status = :status
+               AND (s.endAt IS NULL OR s.endAt > :now)
+               AND COALESCE(s.totalEmailCheckTillNow, 0) + 1
+                   <= s.totalEmailCheckTillExpirySnapshot
+            """)
     int reserveOneEmail(
             @Param("subscriptionId") UUID subscriptionId,
             @Param("status") SubscriptionStatus status,
             @Param("now") Instant now
     );
 
+    /**
+     * Checks whether the subscription has exhausted its quota.
+     * <p>
+     * Informational only; do not use this as the authoritative
+     * concurrency-safe quota check before reserving an attempt.
+     */
     @Query("""
-        select case when
-            coalesce(s.totalEmailCheckTillNow, 0)
-                >= s.totalEmailCheckTillExpirySnapshot
-            then true else false end
-        from UserSubscription s
-        where s.id = :subscriptionId
-          and s.status = :status
-          and (s.endAt is null or s.endAt > :now)
-        """)
+            SELECT CASE WHEN
+                COALESCE(s.totalEmailCheckTillNow, 0)
+                    >= s.totalEmailCheckTillExpirySnapshot
+                THEN TRUE ELSE FALSE END
+            FROM UserSubscription s
+            WHERE s.id = :subscriptionId
+              AND s.status = :status
+              AND (s.endAt IS NULL OR s.endAt > :now)
+            """)
     Optional<Boolean> isQuotaExhausted(
             @Param("subscriptionId") UUID subscriptionId,
             @Param("status") SubscriptionStatus status,
             @Param("now") Instant now
     );
-
 }
