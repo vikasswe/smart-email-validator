@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
@@ -55,9 +56,7 @@ public class BlacklistBulkRepository {
         return inserted;
     }
 
-    private int insertSingleBatch(
-            List<BlacklistBatchItem> items
-    ) {
+    private int insertSingleBatch(List<BlacklistBatchItem> items) {
 
         if (items.isEmpty()) {
             return 0;
@@ -65,13 +64,11 @@ public class BlacklistBulkRepository {
 
         StringBuilder sql = new StringBuilder("""
                 INSERT INTO blacklist_entry
-                    (id, value, type, reason)
+                    (id, value, type, reason, created_at, updated_at)
                 VALUES
                 """);
 
-        List<Object> parameters = new ArrayList<>(
-                items.size() * 3
-        );
+        List<Object> parameters = new ArrayList<>(items.size() * 3);
 
         for (int i = 0; i < items.size(); i++) {
 
@@ -79,7 +76,9 @@ public class BlacklistBulkRepository {
                 sql.append(", ");
             }
 
-            sql.append("(gen_random_uuid(), ?, ?, ?)");
+            sql.append(
+                    "(gen_random_uuid(), ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"
+            );
 
             BlacklistBatchItem item = items.get(i);
 
@@ -95,18 +94,19 @@ public class BlacklistBulkRepository {
                 RETURNING id
                 """);
 
-        List<Object> insertedIds = jdbcTemplate.query(
+        List<UUID> insertedIds = jdbcTemplate.query(
                 sql.toString(),
                 ps -> {
                     for (int i = 0; i < parameters.size(); i++) {
                         ps.setObject(i + 1, parameters.get(i));
                     }
                 },
-                (rs, rowNum) -> rs.getObject("id")
+                (rs, rowNum) -> (UUID) rs.getObject("id")
         );
 
         return insertedIds.size();
     }
+
 
     public record BlacklistBatchItem(
             String value,
