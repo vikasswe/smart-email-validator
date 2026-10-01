@@ -240,7 +240,9 @@ public class UserSubscriptionService {
                 .numOfClientIdSecretGenerate(
                         subscription.getNumOfClientIdSecretGenerateSnapshot()
                 )
-
+                .totalEmailCheckTillNow(
+                        subscription.getTotalEmailCheckTillNow()
+                )
                 .startAt(subscription.getStartAt())
                 .endAt(subscription.getEndAt())
                 .status(subscription.getStatus())

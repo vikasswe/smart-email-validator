@@ -23,6 +23,7 @@ public record UserSubscriptionResponse(
         Integer emailCheckPerMinute,
         Integer totalEmailCheckTillExpiry,
         Integer numOfClientIdSecretGenerate,
+        Integer totalEmailCheckTillNow,
 
         Instant startAt,
         Instant endAt,
